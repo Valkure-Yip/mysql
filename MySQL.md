@@ -189,3 +189,181 @@ Output:
 ...
 ```
 
+
+
+### WHERE
+
+```sql
+SELECT 
+    lastname, 
+    firstname, 
+    jobtitle
+FROM
+    employees
+WHERE
+    jobtitle = 'Sales Rep'; # search condition
+```
+### DISTINCT 去重
+
+When executing the `SELECT` statement with the `DISTINCT` clause, MySQL evaluates the `DISTINCT` clause after the `FROM`, `WHERE`, and `SELECT` clause and before the `ORDER BY` clause:
+
+![MySQL DISTINCT](MySQL.assets/MySQL-DISTINCT.svg)
+
+```sql
+SELECT 
+    DISTINCT lastname
+FROM
+    employees
+ORDER BY 
+    lastname;
+```
+
+#### MySQL DISTINCT with multiple columns
+
+When you specify multiple columns in the `DISTINCT` clause, the `DISTINCT` clause will use the **combination** of values in these columns to determine the uniqueness of the row in the result set.
+
+```sql
+SELECT DISTINCT
+    state, city
+FROM
+    customers
+WHERE
+    state IS NOT NULL
+ORDER BY 
+    state, 
+    city;
+```
+
+```
++---------------+----------------+
+| state         | city           |
++---------------+----------------+
+| BC            | Tsawassen      |
+| BC            | Vancouver      |
+| CA            | Brisbane       |
+| CA            | Burbank        |
+| CA            | Burlingame     |
+| CA            | Glendale       |
+| CA            | Los Angeles    |
+| CA            | Pasadena       |
+| CA            | San Diego      |
+...
+```
+
+### operators
+
+**AND, OR, IN, NOT IN, BETWEEN, LIKE (% _ \ESCAPE)** 
+
+**LIMIT**
+![img](MySQL.assets/MySQL-LIMIT-illustration.png)
+or `LIMIT row_count OFFSET offset`
+
+```sql
+SELECT 
+    select_list
+FROM 
+    table_name
+ORDER BY 
+    sort_expression
+LIMIT offset, row_count;
+```
+
+1) get the highest or lowest rows
+2) Pagination
+3) get the nth highest or lowest value
+
+**IS NULL, IS NOT NULL**
+**AS** alias
+
+```sql
+# column alias
+SELECT 
+   [column_1 | expression] AS `descriptive name`
+FROM 
+   table_name;
+# table alias
+SELECT 
+    e.firstName, 
+    e.lastName
+FROM
+    employees e
+ORDER BY e.firstName;
+```
+
+## JOIN
+
+A relational database consists of multiple related tables linking together using common columns, which are known as [**foreign key**](https://www.mysqltutorial.org/www.mysqltutorial.org/mysql-foreign-key/) columns.
+
+### INNER JOIN
+
+![MySQL INNER JOIN Venn Diagram](MySQL.assets/MySQL-INNER-JOIN-Venn-Diagram-300x166.png)
+
+```sql
+SELECT 
+    productCode, 
+    productName, 
+    textDescription
+FROM
+    products t1
+INNER JOIN productlines t2 
+    ON t1.productline = t2.productline;
+```
+Or `USING`
+```sql
+SELECT 
+    productCode, 
+    productName, 
+    textDescription
+FROM
+    products
+INNER JOIN productlines USING (productline);
+```
+
+### LEFT JOIN
+
+![MySQL LEFT JOIN - Venn Diagram](MySQL.assets/mysql-left-join-Venn-diagram-300x183.png)
+
+WHERE 和 ON 的区别 
+https://www.mysqltutorial.org/mysql-basics/mysql-left-join/：Condition in WHERE clause vs. ON clause
+
+### RIGHT JOIN
+
+ `RIGHT JOIN` and `LEFT JOIN` clauses are functionally equivalent, and they can replace each other as long as the table order is reversed.
+
+### SELF JOIN
+
+### with inner join
+
+Display employees and their manager
+
+```sql
+SELECT 
+    CONCAT(m.lastName, ', ', m.firstName) AS Manager,
+    CONCAT(e.lastName, ', ', e.firstName) AS 'Direct report'
+FROM
+    employees e
+INNER JOIN employees m ON 
+    m.employeeNumber = e.reportsTo
+ORDER BY 
+    Manager;
+```
+
+![MySQL Selft Join Example](MySQL.assets/MySQL-Selft-Join-Example.png)
+
+### with left join
+
+Display the president (who has no manager)
+```sql
+SELECT 
+    IFNULL(CONCAT(m.lastname, ', ', m.firstname),
+            'Top Manager') AS 'Manager',
+    CONCAT(e.lastname, ', ', e.firstname) AS 'Direct report'
+FROM
+    employees e
+LEFT JOIN employees m ON 
+    m.employeeNumber = e.reportsto
+ORDER BY 
+    manager DESC;
+```
+
+![MySQL Self Join with LEFT JOIN technique](MySQL.assets/MySQL-Self-Join-with-LEFT-JOIN-technique.png)
