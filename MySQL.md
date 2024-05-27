@@ -332,7 +332,7 @@ https://www.mysqltutorial.org/mysql-basics/mysql-left-join/：Condition in WHERE
 
 ### SELF JOIN
 
-### with inner join
+#### with inner join
 
 Display employees and their manager
 
@@ -350,7 +350,7 @@ ORDER BY
 
 ![MySQL Selft Join Example](MySQL.assets/MySQL-Selft-Join-Example.png)
 
-### with left join
+#### with left join
 
 Display the president (who has no manager)
 ```sql
@@ -367,3 +367,6 @@ ORDER BY
 ```
 
 ![MySQL Self Join with LEFT JOIN technique](MySQL.assets/MySQL-Self-Join-with-LEFT-JOIN-technique.png)
+
+### CROSS JOIN
+
